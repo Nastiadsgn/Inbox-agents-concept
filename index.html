@@ -240,8 +240,9 @@
       color: var(--gray-500);
     }
 
-    .conversation-avatar.indigo { background: rgba(99, 102, 241, 0.11); }
-    .conversation-avatar.indigo span { color: var(--primary); }
+    /* Default avatar colors - grey shades */
+    .conversation-avatar.indigo { background: var(--gray-200); }
+    .conversation-avatar.indigo span { color: var(--gray-500); }
     .conversation-avatar.violet { background: var(--gray-200); }
     .conversation-avatar.violet span { color: var(--gray-500); }
     .conversation-avatar.emerald { background: var(--gray-200); }
@@ -252,6 +253,20 @@
     .conversation-avatar.cyan span { color: var(--gray-500); }
     .conversation-avatar.rose { background: var(--gray-200); }
     .conversation-avatar.rose span { color: var(--gray-500); }
+
+    /* Highlighted avatar colors - only when selected */
+    .conversation-item.active .conversation-avatar.indigo { background: rgba(99, 102, 241, 0.11); }
+    .conversation-item.active .conversation-avatar.indigo span { color: var(--primary); }
+    .conversation-item.active .conversation-avatar.violet { background: rgba(139, 92, 246, 0.11); }
+    .conversation-item.active .conversation-avatar.violet span { color: var(--accent); }
+    .conversation-item.active .conversation-avatar.emerald { background: rgba(16, 185, 129, 0.11); }
+    .conversation-item.active .conversation-avatar.emerald span { color: var(--success); }
+    .conversation-item.active .conversation-avatar.amber { background: rgba(245, 158, 11, 0.11); }
+    .conversation-item.active .conversation-avatar.amber span { color: var(--warning); }
+    .conversation-item.active .conversation-avatar.cyan { background: rgba(6, 182, 212, 0.11); }
+    .conversation-item.active .conversation-avatar.cyan span { color: var(--info); }
+    .conversation-item.active .conversation-avatar.rose { background: rgba(244, 63, 94, 0.11); }
+    .conversation-item.active .conversation-avatar.rose span { color: var(--danger); }
 
     .conversation-content {
       flex: 1;
@@ -404,7 +419,7 @@
     .ai-avatar {
       width: 34px;
       height: 34px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      background: rgba(99, 102, 241, 0.11);
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
@@ -415,7 +430,7 @@
     .ai-avatar span {
       font-size: 18px;
       font-weight: 600;
-      color: white;
+      color: var(--primary);
     }
 
     .ai-text {
@@ -458,7 +473,7 @@
       font-size: 30px;
       font-weight: 700;
       color: var(--foreground);
-      line-height: 42px;
+      line-height: 100%;
     }
 
     .radial-chart-label {
@@ -517,13 +532,15 @@
     /* User Message */
     .user-message {
       display: flex;
+      justify-content: center;
+      align-items: flex-start;
       gap: 12px;
       padding-left: 160px;
     }
 
     .user-message-bubble {
       flex: 1;
-      background: var(--gray-100);
+      background-color: var(--gray-200);
       padding: 6px 8px;
       border-radius: var(--radius-lg);
       display: flex;
@@ -540,7 +557,7 @@
     .user-tag {
       display: flex;
       align-items: center;
-      background: var(--accent-light);
+      background-color: var(--gray-300);
       border-radius: 36px;
       padding: 0 8px 0 4px;
       height: 24px;
@@ -778,12 +795,12 @@
     }
 
     .detail-label {
-      font-size: 16px;
+      font-size: 14px;
       color: #64748b;
     }
 
     .detail-value {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--foreground);
     }
@@ -978,15 +995,6 @@
           <img class="conversation-icon" src="Images/hight.svg" alt="High priority">
         </div>
 
-        <div class="conversation-item" data-conversation="marketing">
-          <div class="conversation-avatar violet"><span>M</span></div>
-          <div class="conversation-content">
-            <div class="conversation-title">Marketing signals</div>
-            <div class="conversation-subtitle">Campaign Update</div>
-          </div>
-          <img class="conversation-icon" src="Images/medium.svg" alt="Medium priority">
-        </div>
-
         <div class="conversation-item" data-conversation="revenue">
           <div class="conversation-avatar emerald"><span>F</span></div>
           <div class="conversation-content">
@@ -994,6 +1002,15 @@
             <div class="conversation-subtitle">Report Summary</div>
           </div>
           <img class="conversation-icon" src="Images/low.svg" alt="Low priority">
+        </div>
+
+        <div class="conversation-item" data-conversation="marketing">
+          <div class="conversation-avatar violet"><span>M</span></div>
+          <div class="conversation-content">
+            <div class="conversation-title">Marketing signals</div>
+            <div class="conversation-subtitle">Campaign Update</div>
+          </div>
+          <img class="conversation-icon" src="Images/medium.svg" alt="Medium priority">
         </div>
 
         <div class="conversation-item" data-conversation="feature">
@@ -1048,15 +1065,10 @@
       <!-- Content Panel: Competitive Analysis -->
       <div class="chat-content-panel active" data-panel="competitive">
         <div class="chat-messages">
-          <div class="team-avatars">
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt=""></div>
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt=""></div>
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
-          </div>
           <div class="messages-container">
             <div class="ai-message">
               <div class="ai-message-content">
-                <div class="ai-avatar"><span>A</span></div>
+                <div class="ai-avatar"><span>S</span></div>
                 <p class="ai-text">I've compiled a detailed competitive analysis focusing on market strategies of OmniCorp, StellarTech, and Nova Dynamics, including recent campaigns, customer demographics, and marketing spend.</p>
               </div>
               <div class="chart-card">
@@ -1077,8 +1089,16 @@
               </div>
             </div>
             <div class="user-message">
-              <div class="user-message-bubble"><span class="user-message-text">Review report</span></div>
-              <div class="user-avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt=""></div>
+              <div class="user-message-bubble">
+                <span class="user-message-text">Review report</span>
+                <div class="user-tag">
+                  <div class="user-tag-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt=""></div>
+                  <span class="user-tag-name">@Anna</span>
+                </div>
+              </div>
+              <div class="avatar-group">
+                <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1087,10 +1107,6 @@
       <!-- Content Panel: Marketing -->
       <div class="chat-content-panel" data-panel="marketing">
         <div class="chat-messages">
-          <div class="team-avatars">
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt=""></div>
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
-          </div>
           <div class="messages-container">
             <div class="ai-message">
               <div class="ai-message-content">
@@ -1109,9 +1125,6 @@
       <!-- Content Panel: Revenue -->
       <div class="chat-content-panel" data-panel="revenue">
         <div class="chat-messages">
-          <div class="team-avatars">
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt=""></div>
-          </div>
           <div class="messages-container">
             <div class="ai-message">
               <div class="ai-message-content">
@@ -1126,9 +1139,6 @@
       <!-- Content Panel: Feature -->
       <div class="chat-content-panel" data-panel="feature">
         <div class="chat-messages">
-          <div class="team-avatars">
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
-          </div>
           <div class="messages-container">
             <div class="ai-message">
               <div class="ai-message-content">
@@ -1147,10 +1157,6 @@
       <!-- Content Panel: Product -->
       <div class="chat-content-panel" data-panel="product">
         <div class="chat-messages">
-          <div class="team-avatars">
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt=""></div>
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt=""></div>
-          </div>
           <div class="messages-container">
             <div class="ai-message">
               <div class="ai-message-content">
@@ -1165,9 +1171,6 @@
       <!-- Content Panel: Expansion -->
       <div class="chat-content-panel" data-panel="expansion">
         <div class="chat-messages">
-          <div class="team-avatars">
-            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
-          </div>
           <div class="messages-container">
             <div class="ai-message">
               <div class="ai-message-content">
