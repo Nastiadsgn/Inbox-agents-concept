@@ -296,20 +296,77 @@
       flex-shrink: 0;
     }
 
+    .conversation-section-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-500);
+      padding: 4px 0;
+      margin-top: 4px;
+    }
+
+    .collapsed-messages {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      font-size: 13px;
+      color: var(--gray-500);
+      cursor: pointer;
+      border-radius: var(--radius-lg);
+      transition: background 0.15s;
+    }
+
+    .collapsed-messages > span {
+      width: 100%;
+    }
+
+    .collapsed-messages:hover {
+      color: #000;
+    }
+
+    .collapsed-messages-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .collapsed-messages-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--gray-400);
+    }
+
+    .collapsed-messages:hover .collapsed-messages-icon svg {
+      stroke: #000;
+    }
+
     /* Sidebar Footer */
     .sidebar-footer {
       border-top: 1px solid var(--border);
       padding: 16px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
     }
 
-    .agents-icon {
+    .more-btn {
       width: 32px;
       height: 32px;
-      background: var(--gray-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
       border-radius: var(--radius-sm);
+      color: var(--gray-500);
+      transition: all 0.15s;
+    }
+
+    .more-btn:hover {
+      background: var(--gray-100);
+      color: var(--gray-600);
     }
 
     .agents-text {
@@ -1022,30 +1079,28 @@
           <img class="conversation-icon" src="Images/hight.svg" alt="High priority">
         </div>
 
-        <div class="conversation-item" data-conversation="product">
-          <div class="conversation-avatar cyan"><span>P</span></div>
-          <div class="conversation-content">
-            <div class="conversation-title">Product Market Fit</div>
-            <div class="conversation-subtitle">Find new opportunity for ProductX</div>
+        <div class="collapsed-messages">
+          <span>3 more messages</span>
+          <div class="collapsed-messages-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
-          <img class="conversation-icon" src="Images/medium.svg" alt="Medium priority">
         </div>
 
-        <div class="conversation-item" data-conversation="expansion">
-          <div class="conversation-avatar rose"><span>S</span></div>
-          <div class="conversation-content">
-            <div class="conversation-title">Expansion opportunity</div>
-            <div class="conversation-subtitle">New insight for StellarTech</div>
-          </div>
-          <img class="conversation-icon" src="Images/low.svg" alt="Low priority">
-        </div>
       </div>
 
       <div class="sidebar-footer">
-        <div class="agents-icon"></div>
         <div class="agents-text">
           <span class="agents-title">Agents</span>
           <span class="agents-count">6 available</span>
+        </div>
+        <div class="more-btn">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="4" r="1.5" fill="currentColor"/>
+            <circle cx="10" cy="10" r="1.5" fill="currentColor"/>
+            <circle cx="10" cy="16" r="1.5" fill="currentColor"/>
+          </svg>
         </div>
       </div>
     </aside>
@@ -1149,20 +1204,6 @@
             <div class="user-message">
               <div class="user-message-bubble"><span class="user-message-text">Assign to engineering team lead</span></div>
               <div class="user-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Content Panel: Product -->
-      <div class="chat-content-panel" data-panel="product">
-        <div class="chat-messages">
-          <div class="messages-container">
-            <div class="ai-message">
-              <div class="ai-message-content">
-                <div class="ai-avatar"><span>P</span></div>
-                <p class="ai-text">Product-Market Fit Analysis for ProductX: Based on 50 customer interviews, we've identified 3 key opportunities in the enterprise automation space. Top request: workflow templates.</p>
-              </div>
             </div>
           </div>
         </div>
@@ -1272,7 +1313,6 @@
       marketing: 'Marketing Signals',
       revenue: 'Q4 Revenue Report',
       feature: 'Feature Requests',
-      product: 'Product Market Fit',
       expansion: 'Expansion Opportunity'
     };
 
@@ -1297,11 +1337,6 @@
       feature: [
         { name: 'API integration request', time: 'Today', badge: 'New', isNew: true },
         { name: 'Dashboard customization', time: '6 days ago' }
-      ],
-      product: [
-        { name: 'Customer interview insights', time: '3 days ago' },
-        { name: 'Market size analysis', time: '1 week ago' },
-        { name: 'Competitor feature gaps', time: '2 weeks ago' }
       ],
       expansion: [
         { name: 'APAC market entry', time: 'Yesterday', badge: '2' },
