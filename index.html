@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataBao - Inbox Agents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: #ffffff;
+      --foreground: #1a1a2e;
+      --muted-foreground: #6b7280;
+      --border: #e5e7eb;
+      --sidebar-foreground: #374151;
+      --sidebar-primary: #1a1a2e;
+      /* Neutral tones */
+      --gray-100: #f9fafb;
+      --gray-200: #f3f4f6;
+      --gray-300: #e5e7eb;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      /* Primary - Indigo */
+      --primary: #6366f1;
+      --primary-light: #eef2ff;
+      /* Accent - Violet */
+      --accent: #8b5cf6;
+      --accent-light: #f5f3ff;
+      /* Success - Emerald */
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      /* Warning - Amber */
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      /* Info - Cyan */
+      --info: #06b6d4;
+      --info-light: #ecfeff;
+      /* Danger - Rose */
+      --danger: #f43f5e;
+      --danger-light: #fff1f2;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --radius-xl: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      line-height: 1.4;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Layout */
+    .app-container {
+      display: grid;
+      grid-template-columns: 360px 1fr 360px;
+      grid-template-rows: 68px 1fr;
+      height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.6px;
+      color: var(--sidebar-primary);
+    }
+
+    .project-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px;
+    }
+
+    .project-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--sidebar-primary);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .project-icon svg {
+      width: 16px;
+      height: 16px;
+      color: #fafafa;
+    }
+
+    .project-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--sidebar-foreground);
+    }
+
+    .project-type {
+      font-size: 12px;
+      color: var(--sidebar-foreground);
+    }
+
+    /* Left Sidebar */
+    .sidebar-left {
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 4px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .tab.active {
+      background: var(--primary-light);
+    }
+
+    .tab:not(.active) {
+      opacity: 0.6;
+    }
+
+    .tab-label {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 32px;
+      letter-spacing: -0.4px;
+    }
+
+    .tab-count {
+      background: var(--primary);
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      line-height: 16px;
+    }
+
+    .add-btn {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s;
+    }
+
+    .add-btn:hover {
+      background: var(--gray-100);
+    }
+
+    /* Conversation List */
+    .conversation-list {
+      flex: 1;
+      padding: 0 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .conversation-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px 0 5px;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .conversation-item:hover {
+      background: var(--gray-100);
+    }
+
+    .conversation-item.active {
+      background: var(--gray-200);
+    }
+
+    .conversation-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--gray-200);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .conversation-avatar span {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gray-500);
+    }
+
+    .conversation-avatar.indigo { background: rgba(99, 102, 241, 0.11); }
+    .conversation-avatar.indigo span { color: var(--primary); }
+    .conversation-avatar.violet { background: var(--gray-200); }
+    .conversation-avatar.violet span { color: var(--gray-500); }
+    .conversation-avatar.emerald { background: var(--gray-200); }
+    .conversation-avatar.emerald span { color: var(--gray-500); }
+    .conversation-avatar.amber { background: var(--gray-200); }
+    .conversation-avatar.amber span { color: var(--gray-500); }
+    .conversation-avatar.cyan { background: var(--gray-200); }
+    .conversation-avatar.cyan span { color: var(--gray-500); }
+    .conversation-avatar.rose { background: var(--gray-200); }
+    .conversation-avatar.rose span { color: var(--gray-500); }
+
+    .conversation-content {
+      flex: 1;
+      min-width: 0;
+      padding: 8px 0;
+    }
+
+    .conversation-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--foreground);
+      line-height: 20px;
+    }
+
+    .conversation-subtitle {
+      font-size: 12px;
+      color: #000;
+      opacity: 0.5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .conversation-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Sidebar Footer */
+    .sidebar-footer {
+      border-top: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .agents-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--gray-300);
+      border-radius: var(--radius-sm);
+    }
+
+    .agents-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .agents-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--sidebar-foreground);
+    }
+
+    .agents-count {
+      font-size: 12px;
+      color: var(--sidebar-foreground);
+    }
+
+    /* Main Chat Area */
+    .chat-area {
+      display: flex;
+      flex-direction: column;
+      padding: 12px 16px 16px;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      transition: background 0.15s;
+    }
+
+    .close-btn:hover {
+      background: var(--gray-100);
+    }
+
+    /* Chat Messages */
+    .chat-messages {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding-top: 8px;
+    }
+
+    .team-avatars {
+      display: flex;
+      padding-left: 0;
+      margin-bottom: 16px;
+    }
+
+    .team-avatars .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #fff;
+      margin-right: -8px;
+      overflow: hidden;
+    }
+
+    .team-avatars .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .messages-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 16px;
+      padding-bottom: 20px;
+    }
+
+    /* AI Message */
+    .ai-message {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ai-message-content {
+      display: flex;
+      gap: 12px;
+      padding-right: 160px;
+      padding-bottom: 12px;
+    }
+
+    .ai-avatar {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ai-avatar span {
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .ai-text {
+      font-size: 16px;
+      line-height: 1.4;
+      color: #1e1e1e;
+    }
+
+    /* Chart Card */
+    .chart-card {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .radial-chart {
+      position: relative;
+      width: 175px;
+      height: 175px;
+    }
+
+    .radial-chart svg {
+      transform: rotate(-90deg);
+    }
+
+    .radial-chart-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .radial-chart-value {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--foreground);
+      line-height: 42px;
+    }
+
+    .radial-chart-label {
+      font-size: 12px;
+      color: var(--muted-foreground);
+    }
+
+    .chart-trending {
+      text-align: center;
+    }
+
+    .trending-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--foreground);
+      line-height: 20px;
+    }
+
+    .trending-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+    }
+
+    /* Message Actions */
+    .message-actions {
+      display: flex;
+      gap: 0;
+    }
+
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      transition: background 0.15s;
+    }
+
+    .action-btn:hover {
+      background: var(--gray-100);
+    }
+
+    .action-btn svg {
+      width: 16px;
+      height: 16px;
+      color: var(--foreground);
+    }
+
+    /* User Message */
+    .user-message {
+      display: flex;
+      gap: 12px;
+      padding-left: 160px;
+    }
+
+    .user-message-bubble {
+      flex: 1;
+      background: var(--gray-100);
+      padding: 6px 8px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-message-text {
+      font-size: 16px;
+      color: #1e1e1e;
+    }
+
+    .user-tag {
+      display: flex;
+      align-items: center;
+      background: var(--accent-light);
+      border-radius: 36px;
+      padding: 0 8px 0 4px;
+      height: 24px;
+    }
+
+    .user-tag-avatar {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .user-tag-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-tag-name {
+      font-size: 16px;
+      color: #1e1e1e;
+      margin-left: 2px;
+    }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Chat Input */
+    .chat-input-container {
+      display: flex;
+      gap: 8px;
+      height: 36px;
+    }
+
+    .attach-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--background);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .attach-btn:hover {
+      background: var(--gray-100);
+    }
+
+    .chat-input {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      background: var(--background);
+    }
+
+    .chat-input-placeholder {
+      font-size: 14px;
+      color: var(--muted-foreground);
+    }
+
+    .send-btn {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Right Sidebar */
+    .sidebar-right {
+      border-left: 1px solid var(--border);
+      padding: 12px 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      line-height: 32px;
+    }
+
+    /* Highlights Section */
+    .highlights-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .highlight-cards {
+      position: relative;
+      height: 101px;
+    }
+
+    .highlight-card {
+      position: absolute;
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .highlight-card:nth-child(1) {
+      width: 293px;
+      height: 66px;
+      top: 35px;
+      background: #f0f7ff;
+      opacity: 0.5;
+      z-index: 1;
+    }
+
+    .highlight-card:nth-child(2) {
+      width: 316px;
+      height: 72px;
+      top: 22px;
+      background: #f8fafc;
+      border-color: #e0ecf9;
+      z-index: 2;
+    }
+
+    .highlight-card:nth-child(3) {
+      width: 100%;
+      height: 84px;
+      top: 0;
+      left: 0;
+      transform: none;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .highlight-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .highlight-value {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.6px;
+      line-height: 24px;
+    }
+
+    .highlight-badge {
+      background: var(--success-light);
+      color: var(--success);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+    }
+
+    .highlight-desc {
+      font-size: 14px;
+      color: var(--muted-foreground);
+      line-height: 20px;
+    }
+
+    /* Tags Section */
+    .tags-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .tag {
+      background: var(--gray-100);
+      padding: 6px 12px;
+      border-radius: var(--radius-lg);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-600);
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .tag:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .tag:nth-child(1) { background: var(--primary-light); color: var(--primary); }
+    .tag:nth-child(2) { background: var(--danger-light); color: var(--danger); }
+    .tag:nth-child(3) { background: var(--warning-light); color: var(--warning); }
+    .tag:nth-child(4) { background: var(--success-light); color: var(--success); }
+    .tag:nth-child(5) { background: var(--info-light); color: var(--info); }
+    .tag:nth-child(6) { background: var(--accent-light); color: var(--accent); }
+
+    /* Details Section */
+    .details-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 20px;
+    }
+
+    .detail-label {
+      font-size: 16px;
+      color: #64748b;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    .avatar-group {
+      display: flex;
+      padding-right: 6px;
+    }
+
+    .avatar-group .avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 3px;
+      border: 0.75px solid #fff;
+      margin-right: -6px;
+      overflow: hidden;
+    }
+
+    .avatar-group .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Content Panels */
+    .chat-content-panel {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .chat-content-panel.active {
+      display: flex;
+    }
+
+    /* Related Chats Section */
+    .related-chats-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .related-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-right .related-chats-section .section-title {
+      margin-bottom: 0;
+    }
+
+    .related-chat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .related-chat-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--gray-100);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .related-chat-item:hover {
+      background: var(--gray-200);
+      transform: translateX(4px);
+    }
+
+    .related-chat-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+
+    .related-chat-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .related-chat-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--foreground);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .related-chat-time {
+      font-size: 12px;
+      color: var(--muted-foreground);
+    }
+
+    .related-chat-badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--info-light);
+      color: var(--info);
+      flex-shrink: 0;
+    }
+
+    .related-chat-badge.new {
+      background: var(--success);
+      color: white;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gray-300);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--gray-400);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">DataBao</div>
+      <div class="project-info">
+        <div class="project-icon">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="2" width="8" height="4" rx="1"/>
+            <rect x="4" y="10" width="8" height="4" rx="1"/>
+            <rect x="4" y="6" width="8" height="4" rx="1"/>
+          </svg>
+        </div>
+        <div class="project-text">
+          <span class="project-name">Project name</span>
+          <span class="project-type">Business</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar-left">
+      <div class="sidebar-header">
+        <div class="tabs">
+          <div class="tab active">
+            <span class="tab-label">Inbox</span>
+            <span class="tab-count">13</span>
+          </div>
+          <div class="tab">
+            <span class="tab-label">Sent</span>
+            <span class="tab-count">6</span>
+          </div>
+        </div>
+        <div class="add-btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line x1="7" y1="1" x2="7" y2="13"/>
+            <line x1="1" y1="7" x2="13" y2="7"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="conversation-list">
+        <div class="conversation-item active" data-conversation="competitive">
+          <div class="conversation-avatar indigo"><span>S</span></div>
+          <div class="conversation-content">
+            <div class="conversation-title">Competitive analysis update</div>
+            <div class="conversation-subtitle">OmniCorp, StellarTech, Nova Dynamics</div>
+          </div>
+          <img class="conversation-icon" src="Images/hight.svg" alt="High priority">
+        </div>
+
+        <div class="conversation-item" data-conversation="marketing">
+          <div class="conversation-avatar violet"><span>M</span></div>
+          <div class="conversation-content">
+            <div class="conversation-title">Marketing signals</div>
+            <div class="conversation-subtitle">Campaign Update</div>
+          </div>
+          <img class="conversation-icon" src="Images/medium.svg" alt="Medium priority">
+        </div>
+
+        <div class="conversation-item" data-conversation="revenue">
+          <div class="conversation-avatar emerald"><span>F</span></div>
+          <div class="conversation-content">
+            <div class="conversation-title">Q4 Revenue</div>
+            <div class="conversation-subtitle">Report Summary</div>
+          </div>
+          <img class="conversation-icon" src="Images/low.svg" alt="Low priority">
+        </div>
+
+        <div class="conversation-item" data-conversation="feature">
+          <div class="conversation-avatar amber"><span>S</span></div>
+          <div class="conversation-content">
+            <div class="conversation-title">Feature</div>
+            <div class="conversation-subtitle">Ticket Response</div>
+          </div>
+          <img class="conversation-icon" src="Images/hight.svg" alt="High priority">
+        </div>
+
+        <div class="conversation-item" data-conversation="product">
+          <div class="conversation-avatar cyan"><span>P</span></div>
+          <div class="conversation-content">
+            <div class="conversation-title">Product Market Fit</div>
+            <div class="conversation-subtitle">Find new opportunity for ProductX</div>
+          </div>
+          <img class="conversation-icon" src="Images/medium.svg" alt="Medium priority">
+        </div>
+
+        <div class="conversation-item" data-conversation="expansion">
+          <div class="conversation-avatar rose"><span>S</span></div>
+          <div class="conversation-content">
+            <div class="conversation-title">Expansion opportunity</div>
+            <div class="conversation-subtitle">New insight for StellarTech</div>
+          </div>
+          <img class="conversation-icon" src="Images/low.svg" alt="Low priority">
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="agents-icon"></div>
+        <div class="agents-text">
+          <span class="agents-title">Agents</span>
+          <span class="agents-count">6 available</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-area">
+      <div class="chat-header">
+        <h1 class="chat-title" id="chatTitle">Sales agent</h1>
+        <div class="close-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Content Panel: Competitive Analysis -->
+      <div class="chat-content-panel active" data-panel="competitive">
+        <div class="chat-messages">
+          <div class="team-avatars">
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt=""></div>
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt=""></div>
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
+          </div>
+          <div class="messages-container">
+            <div class="ai-message">
+              <div class="ai-message-content">
+                <div class="ai-avatar"><span>A</span></div>
+                <p class="ai-text">I've compiled a detailed competitive analysis focusing on market strategies of OmniCorp, StellarTech, and Nova Dynamics, including recent campaigns, customer demographics, and marketing spend.</p>
+              </div>
+              <div class="chart-card">
+                <div class="radial-chart">
+                  <svg width="175" height="175" viewBox="0 0 175 175">
+                  <circle cx="87.5" cy="87.5" r="70" fill="none" stroke="#eef2ff" stroke-width="20"/>
+                  <circle cx="87.5" cy="87.5" r="70" fill="none" stroke="#6366f1" stroke-width="20" stroke-dasharray="330" stroke-dashoffset="110" stroke-linecap="round"/>
+                  </svg>
+                  <div class="radial-chart-text">
+                    <div class="radial-chart-value">12,451</div>
+                    <div class="radial-chart-label">mentions</div>
+                  </div>
+                </div>
+                <div class="chart-trending">
+                  <div class="trending-title">Up 1.2% from last month ↗</div>
+                  <div class="trending-subtitle">Total mentions over the last quarter</div>
+                </div>
+              </div>
+            </div>
+            <div class="user-message">
+              <div class="user-message-bubble"><span class="user-message-text">Review report</span></div>
+              <div class="user-avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt=""></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Panel: Marketing -->
+      <div class="chat-content-panel" data-panel="marketing">
+        <div class="chat-messages">
+          <div class="team-avatars">
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt=""></div>
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
+          </div>
+          <div class="messages-container">
+            <div class="ai-message">
+              <div class="ai-message-content">
+                <div class="ai-avatar"><span>M</span></div>
+                <p class="ai-text">Marketing campaign update: Our Q4 email campaign achieved a 24% open rate and 8.5% click-through rate. Social engagement is up 15% month-over-month. Key insights attached below.</p>
+              </div>
+            </div>
+            <div class="user-message">
+              <div class="user-message-bubble"><span class="user-message-text">Great results! Can we replicate this for Q1?</span></div>
+              <div class="user-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt=""></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Panel: Revenue -->
+      <div class="chat-content-panel" data-panel="revenue">
+        <div class="chat-messages">
+          <div class="team-avatars">
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt=""></div>
+          </div>
+          <div class="messages-container">
+            <div class="ai-message">
+              <div class="ai-message-content">
+                <div class="ai-avatar"><span>F</span></div>
+                <p class="ai-text">Q4 Revenue Report Summary: Total revenue reached $4.2M, representing a 18% increase YoY. Enterprise segment grew by 25%, while SMB held steady at 12% growth.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Panel: Feature -->
+      <div class="chat-content-panel" data-panel="feature">
+        <div class="chat-messages">
+          <div class="team-avatars">
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
+          </div>
+          <div class="messages-container">
+            <div class="ai-message">
+              <div class="ai-message-content">
+                <div class="ai-avatar"><span>S</span></div>
+                <p class="ai-text">Feature request ticket #1234 has been escalated. Customer is requesting custom API endpoints for their integration. Priority: High. SLA deadline: 48 hours.</p>
+              </div>
+            </div>
+            <div class="user-message">
+              <div class="user-message-bubble"><span class="user-message-text">Assign to engineering team lead</span></div>
+              <div class="user-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Panel: Product -->
+      <div class="chat-content-panel" data-panel="product">
+        <div class="chat-messages">
+          <div class="team-avatars">
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt=""></div>
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt=""></div>
+          </div>
+          <div class="messages-container">
+            <div class="ai-message">
+              <div class="ai-message-content">
+                <div class="ai-avatar"><span>P</span></div>
+                <p class="ai-text">Product-Market Fit Analysis for ProductX: Based on 50 customer interviews, we've identified 3 key opportunities in the enterprise automation space. Top request: workflow templates.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Panel: Expansion -->
+      <div class="chat-content-panel" data-panel="expansion">
+        <div class="chat-messages">
+          <div class="team-avatars">
+            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
+          </div>
+          <div class="messages-container">
+            <div class="ai-message">
+              <div class="ai-message-content">
+                <div class="ai-avatar"><span>S</span></div>
+                <p class="ai-text">New expansion opportunity detected for StellarTech: They're planning to enter the Southeast Asian market in Q2. This aligns with our partnership proposal from last month.</p>
+              </div>
+            </div>
+            <div class="user-message">
+              <div class="user-message-bubble"><span class="user-message-text">Schedule a call with their BD team</span></div>
+              <div class="user-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt=""></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-container">
+        <div class="attach-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M13.5 7.5l-5.5 5.5a3 3 0 01-4.24-4.24l6.5-6.5a2 2 0 012.83 2.83l-6.5 6.5a1 1 0 01-1.42-1.42l5.5-5.5"/>
+          </svg>
+        </div>
+        <div class="chat-input">
+          <span class="chat-input-placeholder">Ask about something...</span>
+          <div class="send-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round">
+              <line x1="10" y1="15" x2="10" y2="5"/>
+              <polyline points="5 10 10 5 15 10"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar-right">
+      <!-- Related Chats Section (dynamically updated) -->
+      <section class="related-chats-section" id="relatedChatsSection">
+        <h2 class="section-title">Related Chats</h2>
+        <div class="related-chat-list" id="relatedChatList">
+          <!-- Content populated by JavaScript -->
+        </div>
+      </section>
+
+      <section class="highlights-section">
+        <h2 class="section-title">Highlights</h2>
+        <div class="highlight-cards">
+          <div class="highlight-card"></div>
+          <div class="highlight-card"></div>
+          <div class="highlight-card">
+            <div class="highlight-header">
+              <span class="highlight-value">+ 24,828</span>
+              <span class="highlight-badge">+25%</span>
+            </div>
+            <p class="highlight-desc">Some info about particular highlight</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="tags-section">
+        <h2 class="section-title">Tags</h2>
+        <div class="tags-container">
+          <span class="tag">Revenue</span>
+          <span class="tag">Churn</span>
+          <span class="tag">Q3</span>
+          <span class="tag">Retention</span>
+          <span class="tag">Retention</span>
+          <span class="tag">Retention</span>
+        </div>
+      </section>
+
+      <section class="details-section">
+        <h2 class="section-title">Details</h2>
+        <div class="detail-row">
+          <span class="detail-label">Date updated</span>
+          <span class="detail-value">14 January</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Assigned specialists</span>
+          <div class="avatar-group">
+            <div class="avatar">
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=48&h=48&fit=crop&crop=face" alt="Specialist 1">
+            </div>
+            <div class="avatar">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop&crop=face" alt="Specialist 2">
+            </div>
+            <div class="avatar">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop&crop=face" alt="Specialist 3">
+            </div>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script>
+    // Conversation data for titles
+    const conversationTitles = {
+      competitive: 'Competitive Analysis',
+      marketing: 'Marketing Signals',
+      revenue: 'Q4 Revenue Report',
+      feature: 'Feature Requests',
+      product: 'Product Market Fit',
+      expansion: 'Expansion Opportunity'
+    };
+
+    // Related chats data for each conversation
+    const relatedChatsData = {
+      competitive: [
+        { name: 'OmniCorp Q3 pricing changes', time: '2 days ago', badge: 'New', isNew: true },
+        { name: 'StellarTech market expansion', time: '5 days ago' },
+        { name: 'Nova Dynamics product launch', time: '1 week ago' }
+      ],
+      marketing: [
+        { name: 'Email campaign performance', time: 'Yesterday', badge: '3' },
+        { name: 'Social media engagement', time: '3 days ago' },
+        { name: 'Ad spend optimization', time: '1 week ago' }
+      ],
+      revenue: [
+        { name: 'Monthly revenue breakdown', time: '4 days ago' },
+        { name: 'Regional sales comparison', time: '1 week ago' },
+        { name: 'Enterprise deal pipeline', time: '2 weeks ago' },
+        { name: 'Quarterly forecast accuracy', time: '3 weeks ago' }
+      ],
+      feature: [
+        { name: 'API integration request', time: 'Today', badge: 'New', isNew: true },
+        { name: 'Dashboard customization', time: '6 days ago' }
+      ],
+      product: [
+        { name: 'Customer interview insights', time: '3 days ago' },
+        { name: 'Market size analysis', time: '1 week ago' },
+        { name: 'Competitor feature gaps', time: '2 weeks ago' }
+      ],
+      expansion: [
+        { name: 'APAC market entry', time: 'Yesterday', badge: '2' },
+        { name: 'Partnership opportunities', time: '4 days ago' },
+        { name: 'Local compliance requirements', time: '1 week ago' }
+      ]
+    };
+
+    // Get DOM elements
+    const conversationItems = document.querySelectorAll('.conversation-item');
+    const contentPanels = document.querySelectorAll('.chat-content-panel');
+    const chatTitle = document.getElementById('chatTitle');
+    const relatedChatList = document.getElementById('relatedChatList');
+
+    // Function to render related chats
+    function renderRelatedChats(conversationId) {
+      const chats = relatedChatsData[conversationId] || [];
+      relatedChatList.innerHTML = chats.map(chat => `
+        <div class="related-chat-item">
+          <div class="related-chat-info">
+            <span class="related-chat-name">${chat.name}</span>
+            <span class="related-chat-time">${chat.time}</span>
+          </div>
+          ${chat.badge ? `<span class="related-chat-badge${chat.isNew ? ' new' : ''}">${chat.badge}</span>` : ''}
+        </div>
+      `).join('');
+
+      // Add click handlers to new items
+      relatedChatList.querySelectorAll('.related-chat-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const chatName = item.querySelector('.related-chat-name').textContent;
+          alert(`Opening related chat: ${chatName}`);
+        });
+      });
+    }
+
+    // Initialize with first conversation
+    renderRelatedChats('competitive');
+
+    // Add click handlers
+    conversationItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const conversationId = item.dataset.conversation;
+        
+        // Update active state on sidebar items
+        conversationItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        // Show corresponding content panel
+        contentPanels.forEach(panel => {
+          if (panel.dataset.panel === conversationId) {
+            panel.classList.add('active');
+          } else {
+            panel.classList.remove('active');
+          }
+        });
+        
+        // Update chat title
+        chatTitle.textContent = conversationTitles[conversationId] || 'Sales agent';
+
+        // Update related chats in right sidebar
+        renderRelatedChats(conversationId);
+      });
+    });
+  </script>
+</body>
+</html>
